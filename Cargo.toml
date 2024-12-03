@@ -11,3 +11,5 @@ rcon-client = "0.1.2"
 clap = { version = "4.5.21", features = ["derive", "env"] }
 qwreey-utility-rs = "0.1.0"
 tokio = "1.41.1"
+rocket_dyn_templates = { version = "0.2.0", features = ["tera"] }
+dashmap = "6.1.0"

@@ -1,0 +1,3 @@
+[submodule "templates/compactive-js"]
+	path = compactive-js
+	url = https://github.com/qwreey/compactive-js

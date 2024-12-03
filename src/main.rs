@@ -2,6 +2,7 @@ use clap::Parser;
 use web_backend::WebBackendUserdata;
 
 mod cli;
+mod hcaptcha_verify;
 mod rcon_client;
 mod web_backend;
 
@@ -20,7 +21,10 @@ async fn main() -> Result<(), String> {
     let web = WebBackendBuilder::new()
         .port(args.port)
         .address(args.address)
-        .userdata(WebBackendUserdata { rcon });
+        .userdata(WebBackendUserdata {
+            rcon,
+            title: args.title.unwrap_or_else(|| String::from("MC-Captcha")),
+        });
 
     web.build().await?;
 

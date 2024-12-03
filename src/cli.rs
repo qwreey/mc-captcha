@@ -21,4 +21,8 @@ pub struct Cli {
     /// Rcon hostname to connect, default: localhost
     #[clap(long, action, env)]
     pub rcon_host: Option<String>,
+
+    /// Site title
+    #[clap(long, env)]
+    pub title: Option<String>,
 }

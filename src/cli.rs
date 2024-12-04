@@ -12,7 +12,7 @@ pub struct Cli {
 
     // Web ui expose address, defualt: localhost
     #[clap(long, action, env)]
-    pub address: Option<IpAddr>,
+    pub bind: Option<IpAddr>,
 
     /// Rcon password to use
     #[clap(long, action, env)]
@@ -21,6 +21,14 @@ pub struct Cli {
     /// Rcon hostname to connect, default: localhost
     #[clap(long, action, env)]
     pub rcon_host: Option<String>,
+
+    /// Hcaptcha sitekey if enabled
+    #[clap(long, action, env)]
+    pub hcaptcha_sitekey: Option<String>,
+
+    /// Hcaptcha secret if enabled
+    #[clap(long, action, env)]
+    pub hcaptcha_secret: Option<String>,
 
     /// Site title
     #[clap(long, env)]

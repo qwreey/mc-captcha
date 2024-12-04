@@ -6,17 +6,27 @@
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     
     <title>{{ site.title }}</title>
+
+    <meta name="application-data"
+        data-question-len="{{ length( question_list ) }}"
+    />
+    <script>
+        document.getElementsByName("application-data")
+    </script>
     {% include "base" %}
 </head>
 <body>
     {% if hcaptcha.enabled %}
-        <form action="" method="POST">
-            <input type="text" name="email" placeholder="Email" />
-            <input type="password" name="password" placeholder="Password" />
-            <div class="h-captcha" data-sitekey="{{ hcaptcha.sitekey }}"></div>
-            <br />
-            <input type="submit" value="Submit" />
-        </form>
+    <div class="h-captcha" data-sitekey="{{ hcaptcha.sitekey }}"></div>
     {% endif %}
+    {% for index, question in question_list %}
+    <div class="question" id="question-{{ index }}">
+        <p class="question-title">
+            {{ question.title }}
+        </p>
+        <input type="text" name="question_1" placeholder="질문 1" />
+        {{ question.description }}
+    </div>
+    {% endfor %}
 </body>
 </html>

@@ -2,11 +2,9 @@ use qwreey_utility_rs::ErrToString;
 
 use rcon_client::{AuthRequest, RCONClient, RCONConfig, RCONRequest};
 
-pub struct RconClient {
-    client: RCONClient,
-}
+pub struct Rcon(RCONClient);
 
-impl RconClient {
+impl Rcon {
     pub fn new(url: String, password: String) -> Result<Self, String> {
         let mut client = RCONClient::new(RCONConfig {
             url,
@@ -20,12 +18,12 @@ impl RconClient {
             return Err(String::from("Auth failed"));
         }
 
-        Ok(Self { client })
+        Ok(Self(client))
     }
 
     pub fn execute(&mut self, command: String) -> Result<String, String> {
         let result = self
-            .client
+            .0
             .execute(RCONRequest::new(command))
             .err_tostring()?;
         Ok(result.body)

@@ -3,13 +3,27 @@ name = "mc-captcha"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "mc-captcha"
+path = "src/main.rs"
+
+[workspace]
+resolver = "2"
+members = [
+    "qwreey-rocket-ignoreme",
+    # "qwreey-utility-rs-ignoreme"
+]
+
 [dependencies]
 hcaptcha = "2.7.6"
 serde = { version = "1.0", features = ["derive"] }
 rocket = { version = "0.5.1", features = ["json"] }
 rcon-client = "0.1.2"
 clap = { version = "4.5.21", features = ["derive", "env"] }
-qwreey-utility-rs = "0.1.0"
+# qwreey-utility-rs = { version = "0.1.1", path = "qwreey-utility-rs-ignoreme" }
+qwreey-utility-rs = "0.1.1"
 tokio = "1.41.1"
 rocket_dyn_templates = { version = "0.2.0", features = ["tera"] }
 dashmap = "6.1.0"
+qwreey-rocket = { version = "0.1.0", path = "qwreey-rocket-ignoreme" }
+# qwreey-rocket = { version = "0.1.0", path = "qwreey-rocket" }

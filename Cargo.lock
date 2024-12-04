@@ -1369,6 +1369,7 @@ dependencies = [
  "clap",
  "dashmap",
  "hcaptcha",
+ "qwreey-rocket",
  "qwreey-utility-rs",
  "rcon-client",
  "rocket",
@@ -1836,10 +1837,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "qwreey-utility-rs"
+name = "qwreey-rocket"
 version = "0.1.0"
+dependencies = [
+ "qwreey-utility-rs",
+ "rocket",
+ "rocket_dyn_templates",
+ "serde",
+]
+
+[[package]]
+name = "qwreey-utility-rs"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d0482f83fd9dad434c1a66ed8fbf285fec701fe18487a7e4a1d36c51d2801f8"
+checksum = "be269d5cb80ac29d86f1202dae70a605efe88276b0b3814b01ccef4c63ca388d"
 
 [[package]]
 name = "rand"

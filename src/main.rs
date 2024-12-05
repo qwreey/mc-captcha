@@ -1,40 +1,55 @@
 use clap::Parser;
-use qwreey_rocket::WebBackendBuilder;
+use qwreey_rocket::{RocketBuild, RouteExport, TeraError, TeraValue, WebBackendBuilder};
 
 mod cli;
-mod web;
 mod hcaptcha_verify;
+mod question;
 mod rcon_client;
+mod web;
 
-use qwreey_utility_rs::ArcRwUserdata;
-use web::export_all;
 use cli::Cli;
-use hcaptcha_verify::HcaptchaVerify;
-use rcon_client::Rcon;
+use hcaptcha_verify::{HcaptchaInit, HcaptchaVerify, HcaptchaVerifyData};
+use question::{Question, QuestionInit, QuestionList, QuestionRegexList};
+use qwreey_utility_rs::ArcRwUserdata;
+use rcon_client::{Rcon, RconInit};
+use web::export_all;
+
+struct Main;
+impl RouteExport for Main {
+    fn tera(&self, tera: &mut rocket_dyn_templates::tera::Tera, _userdata: ArcRwUserdata) {
+        tera.register_function(
+            "compactive_js",
+            |_value: &std::collections::HashMap<
+                std::string::String,
+                TeraValue,
+            >|
+             -> Result<
+                TeraValue,
+                TeraError,
+            > {
+                Ok(TeraValue::String(String::from(
+                    include_str!("../compactive-js/compactive.min.js"),
+                )))
+            },
+        );
+    }
+}
 
 #[tokio::main]
 async fn main() -> Result<(), String> {
-    let args = Cli::parse();
-
     let userdata = ArcRwUserdata::new();
-
+    let args = Cli::parse();
     userdata.insert_of(args.clone());
-    userdata.insert_of(Rcon::new(
-        args.rcon_host
-            .unwrap_or_else(|| String::from("localhost:25575")),
-        args.rcon_password,
-    )?);
-    userdata.insert_of(HcaptchaVerify::new(
-        args.hcaptcha_secret,
-        args.hcaptcha_sitekey,
-    ));
 
     let web = WebBackendBuilder::new()
         .port(args.port)
         .bind(args.bind)
         .userdata(userdata)
+        .add_export(Main)
+        .add_export(QuestionInit)
+        .add_export(RconInit)
+        .add_export(HcaptchaInit)
         .add_export_many(export_all());
-
     web.build().await?;
 
     Ok(())

@@ -1372,9 +1372,11 @@ dependencies = [
  "qwreey-rocket",
  "qwreey-utility-rs",
  "rcon-client",
+ "regex",
  "rocket",
  "rocket_dyn_templates",
  "serde",
+ "serde_json",
  "tokio",
 ]
 
@@ -1844,13 +1846,12 @@ dependencies = [
  "rocket",
  "rocket_dyn_templates",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
 name = "qwreey-utility-rs"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be269d5cb80ac29d86f1202dae70a605efe88276b0b3814b01ccef4c63ca388d"
+version = "0.1.2"
 
 [[package]]
 name = "rand"

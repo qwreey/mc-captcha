@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    {% if hcaptcha.enabled %}
+        <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    {% endif %}
     <title>{{ site.title }}</title>
     {{ [global,lang] | js_global }}
     {{ compactive_js() | wrap_script }}

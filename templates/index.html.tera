@@ -5,17 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <title>{{ site.title }}</title>
-    {{ global | js_global }}
+    {{ [global,lang] | js_global }}
     {{ compactive_js() | wrap_script }}
+    {% include "dialog" %}
     <style>
-        p{margin:0;}
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+        body{
+            position: relative;
+            counter-set: question 0;
+        }
+
         .question{
             display: flex;
             gap: 12px;
             flex-direction: column;
         }
-        body{
-            counter-set: question 0;
+        .submit-holder {
+            display: flex;
+            justify-content: end;
+            padding-top: 24px;
         }
         .question-title::before{
             counter-increment: question;
@@ -34,9 +47,9 @@
             font-weight: 300;
             font-size: 1.2rem;
         }
-        .question-captcha{
+        #answer-captcha{
             display: flex;
-            justify-content: center;
+            justify-content: start;
         }
         .divider {
             background-color: rgba(0, 0, 0, 0.2);
@@ -49,6 +62,9 @@
         .question-holder{
             padding: 0 12px;
         }
+    </style>
+    <style -global>
+        p{margin:0;}
         input[type="text"] {
             font-size: 1.1rem;
             padding: 8px;
@@ -62,6 +78,20 @@
         input[type="text"]:active {
             outline: 2px solid rgba(93, 41, 131, 0.7);
         }
+        input[type="button"] {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(190, 98, 255, 0.6);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        input[type="button"]:hover {
+            background: rgba(190, 98, 255, 0.5);
+        }
+        input[type="button"]:active {
+            background: rgba(190, 98, 255, 0.8);
+        }
     </style>
     {{ additional_content.head }}
 </head>
@@ -69,9 +99,9 @@
     {{ additional_content.before_question }}
     <div class="question-holder">
         {% if hcaptcha.enabled %}
-            <div class="question">
-                <p class="question-title">{{ hcaptcha.title }}</p>
-                <div class="h-captcha question-captcha" data-theme="dark" data-sitekey="{{ hcaptcha.sitekey }}"></div>
+            <div class="question" id="captcha">
+                <p class="question-title">{{ lang.hcaptcha_title }}</p>
+                <div class="h-captcha" id="answer-captcha" data-theme="dark" data-sitekey="{{ hcaptcha.sitekey }}"></div>
             </div>
             <div class="divider"></div>
         {% endif %}
@@ -79,16 +109,104 @@
             <div class="question" id="question-{{ loop.index }}">
                 <p class="question-title">{{ question.title }}</p>
                 <p class="question-description">{{ question.description | newline_to_br }}</p>
-                <input class="question-input" type="text" name="question_1" placeholder="Answer" />
+                <input class="question-input" type="text" id="answer-{{ loop.index }}" placeholder="Answer" />
             </div>
             <div class="divider"></div>
         {% endfor %}
-        <div class="question">
-            <p class="question-title">{{ minecraft_name.title }}</p>
-            <p class="question-description">{{ minecraft_name.description }}</p>
-            <input class="question-input" type="text" name="question_minecraft_name" placeholder="Minecraft user name" />
+        <div class="question" id="minecraft-name">
+            <p class="question-title">{{ lang.minecraft_name_title }}</p>
+            <p class="question-description">{{ lang.minecraft_name_description }}</p>
+            <input class="question-input" type="text" id="answer-minecraft-name" placeholder="Minecraft user name" />
+        </div>
+        <div class="submit-holder">
+            <input id="submit" type="button" value="{{ lang.comfirm }}" />
         </div>
     </div>
     {{ additional_content.after_question }}
+    <my-dialog id="dialog">
+        <div class="dialog-buttons">
+            <input id="dialog_ok" type="button" value="{{ lang.ok }}" />
+        </div>
+    </my-dialog>
+    <script>
+        function format(str, item) {
+            return str.replace(/{([^}]+)}/g, (_,match)=>item[match])
+        }
+        function getTitle(id) {
+            return document.querySelector(`#${id}>.question-title`).textContent
+        }
+        function submit() {
+            let body = { question_answer: [] }
+
+            // Get questions
+            for (let question=1; question<=+global.QuestionLength; question++) {
+                let input = document.getElementById(`answer-${question}`);
+                if (input.value == "") {
+                    return [false, format(lang.empty_field, { name: getTitle(`question-${question}`) })]
+                }
+                body.question_answer.push(input.value)
+            }
+            
+            // Get minecraft name
+            body.minecraft_name = document.getElementById("answer-minecraft-name").value
+            if (body.minecraft_name == "") {
+                return [false, format(lang.empty_field, { name: getTitle("minecraft-name") })]
+            }
+
+            // Get captcha
+            const capthca = document.getElementById("answer-captcha")
+            if (capthca) {
+                body.captcha_response = capthca.firstElementChild.getAttribute("data-hcaptcha-response") ?? ""
+                if (body.captcha_response == "") {
+                    return [false, lang.no_captcha]
+                }
+            }
+
+            return [true, JSON.stringify(body)]
+        }
+        function showDialog(title, text) {
+            const dialog = document.getElementById("dialog")
+            dialog.show = true
+            dialog.title = title
+            dialog.description = text
+        }
+        const submitButton = document.getElementById("submit")
+        submitButton.addEventListener("click", ()=>{
+            submitButton.disabled = true
+            const [ok, body] = submit()
+            if (!ok) {
+                submitButton.disabled = false
+                return showDialog(lang.dialog_err_title, body)
+            }
+            fetch(location.origin + "/user-commit", {
+                body,
+                method: "POST",
+            }).catch(err=>{
+                submitButton.disabled = false
+                showDialog(lang.dialog_err_title, err+[])
+            }).then(async res=>{
+                if (!res.ok) {
+                    submitButton.disabled = false
+                    return showDialog(lang.dialog_err_title, await res.body())
+                }
+                let result = await res.json()
+                if (result.alreay) {
+                    showDialog(lang.dialog_ok_title, lang.result_already)
+                } else if (result.name_err) {
+                    showDialog(lang.dialog_err_title, lang.result_name_err)
+                } else if (result.answer_err) {
+                    showDialog(lang.dialog_err_title, lang.result_answer_err)
+                } else if (result.not_exist) {
+                    showDialog(lang.dialog_err_title, lang.result_not_exist)
+                } else if (result.captcha_err) {
+                    showDialog(lang.dialog_err_title, lang.result_captcha_err)
+                } else if (!result.ok) {
+                    showDialog(lang.dialog_err_title, lang.result_unknown_err)
+                }
+                showDialog(lang.dialog_ok_title, lang.result_ok)
+                submitButton.disabled = false
+            })
+        })
+    </script>
 </body>
 </html>

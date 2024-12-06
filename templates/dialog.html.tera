@@ -1,0 +1,107 @@
+
+<style -global>
+    :host { all: inherit; }
+    my-dialog {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        visibility: hidden;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        background: transparent;
+    }
+    my-dialog.visible {
+        visibility: visible;
+    }
+    .dialog-buttons{
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        margin-top: 4px;
+    }
+</style>
+<template id="my-dialog">
+    <div class="dialog" -ref="_dialog">
+        <div class="dialog-inner">
+            <p id="dialog_title" class="dialog-title" -ref="_title"></p>
+            <p id="dialog_description" class="dialog-description" -ref="_description"></p>
+            <slot></slot>
+        </div>
+    </div>
+    <style>
+        .dialog{
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .dialog-inner{
+            transform: translateY(+32px);
+            transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+            margin: 22px;
+            background-color: white;
+            padding: 16px;
+            height: fit-content;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .dialog.show .dialog-inner{
+            transform: none;
+        }
+        .dialog.show{
+            opacity: 1;
+        }
+        .dialog-description{
+            font-weight: normal;
+            font-size: 1rem;
+            padding: 0 6px;
+        }
+        .dialog-title{
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 0 4px;
+        }
+    </style>
+</template>
+<script>
+    class MY_Dialog extends BaseElement {
+        static { Init(this,_=>_
+            .tag("my-dialog")
+            .attr("show")
+            .attr("title")
+            .attr("description")
+        )}
+        constructor() {
+            super()
+            this._open = 0
+            this._dialog.onclick = ()=>this.show = false
+        }
+        titleAttr(val) {
+            this._title.textContent = val
+        }
+        descriptionAttr(val) {
+            this._description.textContent = val
+        }
+        showAttr(val) {
+            const current = ++this._open
+            if (val) {
+                    this._dialog.classList.add("show")
+                    this.classList.add("visible")
+            } else {
+                this._dialog.classList.remove("show")
+                setTimeout(()=>{
+                    this.classList.remove("visible")
+                }, 320)
+            }
+        }
+    }
+</script>

@@ -30,10 +30,11 @@ impl HcaptchaVerify {
             .get_user_captcha_response()
             .ok_or_else(|| String::from("No client response"))?;
         let captcha = HcaptchaCaptcha::new(user_res.as_str()).err_tostring()?;
-        let request = HcaptchaRequest::new(&self.secret, captcha)
+        let request = HcaptchaRequest::new(&self.secret.trim(), captcha)
             .err_tostring()?
             .set_sitekey(self.sitekey.as_str())
             .err_tostring()?;
+        dbg!(&self.secret);
         let api_response = HcaptchaClient::new()
             .verify_client_response(request)
             .await

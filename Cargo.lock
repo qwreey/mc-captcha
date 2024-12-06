@@ -1369,8 +1369,8 @@ dependencies = [
  "clap",
  "dashmap",
  "hcaptcha",
- "qwreey-rocket",
- "qwreey-utility-rs",
+ "qwreey-rocket 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "qwreey-utility-rs 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rcon-client",
  "regex",
  "rocket",
@@ -1840,9 +1840,22 @@ dependencies = [
 
 [[package]]
 name = "qwreey-rocket"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
- "qwreey-utility-rs",
+ "qwreey-utility-rs 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rocket",
+ "rocket_dyn_templates",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "qwreey-rocket"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a1dae04c1964c625eaa6144369c28f06c626c3efafe180532c785e36118fe0a"
+dependencies = [
+ "qwreey-utility-rs 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "rocket",
  "rocket_dyn_templates",
  "serde",
@@ -1852,6 +1865,12 @@ dependencies = [
 [[package]]
 name = "qwreey-utility-rs"
 version = "0.1.2"
+
+[[package]]
+name = "qwreey-utility-rs"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "650c469f3b5835b092a3940f9111092e7fccb8bcc2e60b7d5b78f39fa0a9e460"
 
 [[package]]
 name = "rand"

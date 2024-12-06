@@ -8,7 +8,7 @@ use qwreey_utility_rs::{write_map, ArcRwUserdata, OrAsStr};
 use rocket::{get, http::ContentType, routes};
 use rocket_dyn_templates::context;
 
-use crate::{cli::Cli, HcaptchaVerify, QuestionList};
+use crate::{cli::Cli, lang::get_lang_map, HcaptchaVerify, QuestionList};
 
 #[get("/")]
 pub fn handle(userdata: &UserdataState) -> ElementResponder {
@@ -39,17 +39,13 @@ impl RouteExport for Index {
                         enabled: hcaptcha.enabled,
                         sitekey: &hcaptcha.sitekey,
                         secret: &hcaptcha.secret,
-                        title: cli.hcaptcha_title.or_as_str("캡챠를 진행해주세요"),
                     },
                     question_list: &*question_list,
                     global: write_map!(HashMap::<&str, String>::new(), {
                         "id" => "global".to_string(),
                         "QuestionLength" => question_list.len().to_string(),
                     }),
-                    minecraft_name: context! {
-                        title: cli.minecraft_name_title.or_as_str("마인크래프트 유저 이름"),
-                        description: cli.minecraft_name_description.or_as_str("마인크래프트 유저 이름을 입력해주세요"),
-                    },
+                    lang: get_lang_map(&cli),
                     additional_content: context! {
                         head: cli.additional_content_head.or_as_str(""),
                         after_question: cli.additional_content_after_question.or_as_str(""),

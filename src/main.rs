@@ -1,17 +1,18 @@
 use clap::Parser;
-use qwreey_rocket::{RocketBuild, RouteExport, TeraError, TeraValue, WebBackendBuilder};
+use qwreey_rocket::{RouteExport, TeraError, TeraValue, WebBackendBuilder};
 
 mod cli;
 mod hcaptcha_verify;
 mod question;
 mod rcon_client;
 mod web;
+mod lang;
 
 use cli::Cli;
 use hcaptcha_verify::{HcaptchaInit, HcaptchaVerify, HcaptchaVerifyData};
-use question::{Question, QuestionInit, QuestionList, QuestionRegexList};
+use question::{QuestionInit, QuestionList};
 use qwreey_utility_rs::ArcRwUserdata;
-use rcon_client::{Rcon, RconInit};
+use rcon_client::RconInit;
 use web::export_all;
 
 struct Main;

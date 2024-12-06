@@ -33,7 +33,7 @@ impl RouteExport for Index {
                 "index",
                 context! {
                     site: context! {
-                        title: &"Test",
+                        title: cli.title.or_as_str("mc-captcha"),
                     },
                     hcaptcha: context! {
                         enabled: hcaptcha.enabled,

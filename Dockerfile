@@ -9,4 +9,4 @@ RUN \
     cargo build --release && \
     cp /app/target/release/mc-captcha /
 RUN apk del musl-dev libressl-dev && rm -rf /app
-ENTRYPOINT [ "/mc-captcha" ]
+ENTRYPOINT [ "/entrypoint.sh" ]

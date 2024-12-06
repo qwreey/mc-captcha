@@ -191,17 +191,17 @@
                 }
                 let result = await res.json()
                 if (result.alreay) {
-                    showDialog(lang.dialog_ok_title, lang.result_already)
+                    return showDialog(lang.dialog_ok_title, lang.result_already)
                 } else if (result.name_err) {
-                    showDialog(lang.dialog_err_title, lang.result_name_err)
+                    return showDialog(lang.dialog_err_title, lang.result_name_err)
                 } else if (result.answer_err) {
-                    showDialog(lang.dialog_err_title, lang.result_answer_err)
+                    return showDialog(lang.dialog_err_title, lang.result_answer_err)
                 } else if (result.not_exist) {
-                    showDialog(lang.dialog_err_title, lang.result_not_exist)
+                    return showDialog(lang.dialog_err_title, lang.result_not_exist)
                 } else if (result.captcha_err) {
-                    showDialog(lang.dialog_err_title, lang.result_captcha_err)
+                    return showDialog(lang.dialog_err_title, lang.result_captcha_err)
                 } else if (!result.ok) {
-                    showDialog(lang.dialog_err_title, lang.result_unknown_err)
+                    return showDialog(lang.dialog_err_title, lang.result_unknown_err)
                 }
                 showDialog(lang.dialog_ok_title, lang.result_ok)
                 submitButton.disabled = false

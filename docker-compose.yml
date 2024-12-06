@@ -1,0 +1,4 @@
+services:
+  mc-captcha:
+    build: .
+    image: qwreey/mc-captcha

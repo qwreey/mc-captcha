@@ -193,20 +193,26 @@
                 }
                 let result = await res.json()
                 if (result.alreay) {
+                    submitButton.disabled = false
                     return showDialog(lang.dialog_ok_title, lang.result_already)
                 } else if (result.name_err) {
+                    submitButton.disabled = false
                     return showDialog(lang.dialog_err_title, lang.result_name_err)
                 } else if (result.answer_err) {
+                    submitButton.disabled = false
                     return showDialog(lang.dialog_err_title, lang.result_answer_err)
                 } else if (result.not_exist) {
+                    submitButton.disabled = false
                     return showDialog(lang.dialog_err_title, lang.result_not_exist)
                 } else if (result.captcha_err) {
+                    submitButton.disabled = false
                     return showDialog(lang.dialog_err_title, lang.result_captcha_err)
                 } else if (!result.ok) {
+                    submitButton.disabled = false
                     return showDialog(lang.dialog_err_title, lang.result_unknown_err)
                 }
-                showDialog(lang.dialog_ok_title, lang.result_ok)
                 submitButton.disabled = false
+                return showDialog(lang.dialog_ok_title, lang.result_ok)
             })
         })
     </script>

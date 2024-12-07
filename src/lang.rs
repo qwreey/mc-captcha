@@ -19,7 +19,7 @@ pub fn get_lang_map(cli: &Cli) -> HashMap<&str, String> {
         lang_no_captcha => "캡챠가 진행되지 않았습니다. 캡챠를 진행해주세요.",
         lang_hcaptcha_title => "캡챠를 진행해주세요",
         lang_minecraft_name_title => "마인크래프트 유저 이름",
-        lang_minecraft_name_description => "화이트리스트에 등록할 마인크래프트 유저 이름을 입력해주세요",
+        lang_minecraft_name_description => "화이트리스트에 등록할 마인크래프트 인게임 유저 이름을 입력해주세요. XBox 계정 이름을 입력하는것이 아니라 게임 내에서 표시되는 이름을 입력하세요.",
         lang_comfirm => "진행하기",
         lang_ok => "알겠어요",
         lang_dialog_err_title => "잠깐만요!",
